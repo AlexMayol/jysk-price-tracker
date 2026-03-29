@@ -24,7 +24,7 @@ jobs:
 
       - run: node src/main.js
         env:
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
 
       - name: Commit price history
         run: |

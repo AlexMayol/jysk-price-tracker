@@ -45,40 +45,33 @@ function buildEmailHtml(drops) {
 }
 
 async function sendEmail(drops) {
-  const apiKey = process.env.SENDGRID_API_KEY;
+  const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.error("SENDGRID_API_KEY is not set, skipping email notification");
+    console.error("RESEND_API_KEY is not set, skipping email notification");
     return false;
   }
+
+  const { Resend } = require("resend");
+  const resend = new Resend(apiKey);
 
   const html = buildEmailHtml(drops);
   const itemSummary = drops.map((d) => d.name).join(", ");
 
-  const payload = {
-    personalizations: [{ to: [{ email: "alexmayolc@gmail.com" }] }],
-    from: { email: "alexmayol@hotmail.com", name: "JYSK Price Tracker" },
-    subject: `JYSK Price Drop: ${itemSummary}`,
-    content: [{ type: "text/html", value: html }],
-  };
-
   try {
-    const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+    const { data, error } = await resend.emails.send({
+      from: "jysk@resend.dev",
+      to: "alexmayolc@gmail.com",
+      subject: `JYSK Price Drop: ${itemSummary}`,
+      html,
     });
 
-    if (response.ok || response.status === 202) {
-      console.log("Email sent successfully");
-      return true;
-    } else {
-      const body = await response.text();
-      console.error(`SendGrid error (${response.status}): ${body}`);
+    if (error) {
+      console.error(`Resend error: ${JSON.stringify(error)}`);
       return false;
     }
+
+    console.log(`Email sent successfully (id: ${data.id})`);
+    return true;
   } catch (err) {
     console.error(`Failed to send email: ${err.message}`);
     return false;
