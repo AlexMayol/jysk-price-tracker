@@ -1,0 +1,13 @@
+{
+  "name": "jysk-price-tracker",
+  "version": "1.0.0",
+  "description": "Track JYSK product prices and get notified on price drops",
+  "scripts": {
+    "start": "node src/main.js"
+  },
+  "author": "AlexMayol",
+  "license": "ISC",
+  "dependencies": {
+    "playwright": "^1.58.2"
+  }
+}
