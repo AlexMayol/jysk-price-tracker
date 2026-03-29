@@ -34,6 +34,7 @@ function findDrops(items, scrapedData, history) {
         id: item.id,
         name: item.name,
         url: item.url,
+        shop: item.shop,
         current_price: scraped.current_price,
         previous_price: lastEntry.current_price,
         drop_pct: Math.round(
@@ -68,7 +69,7 @@ function updateHistory(items, scrapedData, history) {
 }
 
 async function main() {
-  console.log("=== JYSK Price Tracker ===");
+  console.log("=== Furniture Price Tracker ===");
   console.log(`Date: ${new Date().toISOString().split("T")[0]}\n`);
 
   const items = loadJson(ITEMS_PATH, []);

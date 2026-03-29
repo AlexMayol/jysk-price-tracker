@@ -1,75 +1,27 @@
 const { chromium } = require("playwright");
 
-function parsePrice(text) {
-  const match = text.match(/([\d.,]+)\s*€/);
-  if (!match) return null;
-  return parseFloat(match[1].replace(".", "").replace(",", "."));
-}
-
-function parseDiscount(text) {
-  const match = text.match(/-(\d+)%/);
-  if (!match) return null;
-  return parseInt(match[1], 10);
-}
+const adapters = {
+  jysk: require("./adapters/jysk"),
+  ikea: require("./adapters/ikea"),
+};
 
 async function scrapeProduct(page, item) {
-  console.log(`Scraping: ${item.name} (${item.url})`);
+  console.log(`Scraping: ${item.name} [${item.shop}] (${item.url})`);
+
+  const adapter = adapters[item.shop];
+  if (!adapter) {
+    console.error(`  Unknown shop "${item.shop}" for ${item.id}`);
+    return null;
+  }
 
   try {
-    await page.goto(item.url, { waitUntil: "domcontentloaded", timeout: 30000 });
-    await page.waitForSelector('[data-testid="product-price"]', { timeout: 10000 });
+    const result = await adapter.scrape(page, item);
+    result.date = new Date().toISOString().split("T")[0];
+    result.shop = item.shop;
 
-    const ariaLabel = await page.$eval(
-      '[data-testid="product-price"]',
-      (el) => el.getAttribute("aria-label")
-    );
-    const currentPrice = parsePrice(ariaLabel || "");
+    const { current_price, original_price, on_sale, discount_pct } = result;
+    console.log(`  Price: ${current_price}€${on_sale ? ` (was ${original_price}€, -${discount_pct}%)` : ""}`);
 
-    if (currentPrice === null) {
-      console.error(`  Could not parse current price for ${item.id}`);
-      return null;
-    }
-
-    const purchaseInfo = await page.$('[data-testid="product-purchase-info"]');
-
-    // "Precio normal: X,XX € /u (-XX%)" or "Precio inicial X,XX € /u"
-    let originalPrice = null;
-    let discount = null;
-
-    if (purchaseInfo) {
-      const infoText = await purchaseInfo.textContent();
-
-      const normalMatch = infoText.match(/Precio normal:\s*([\d.,]+)\s*€/);
-      const inicialMatch = infoText.match(/Precio inicial\s*([\d.,]+)\s*€/);
-
-      if (normalMatch) {
-        originalPrice = parseFloat(normalMatch[1].replace(".", "").replace(",", "."));
-      } else if (inicialMatch) {
-        originalPrice = parseFloat(inicialMatch[1].replace(".", "").replace(",", "."));
-      }
-
-      const discountBadge = await purchaseInfo.$(".bg-discount");
-      if (discountBadge) {
-        const badgeText = await discountBadge.textContent();
-        discount = parseDiscount(badgeText);
-      }
-    }
-
-    if (!discount && originalPrice && originalPrice > currentPrice) {
-      discount = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
-    }
-
-    const onSale = originalPrice !== null && currentPrice < originalPrice;
-
-    const result = {
-      date: new Date().toISOString().split("T")[0],
-      current_price: currentPrice,
-      original_price: originalPrice,
-      on_sale: onSale,
-      discount_pct: discount || 0,
-    };
-
-    console.log(`  Price: ${currentPrice}€${onSale ? ` (was ${originalPrice}€, -${result.discount_pct}%)` : ""}`);
     return result;
   } catch (err) {
     console.error(`  Error scraping ${item.id}: ${err.message}`);

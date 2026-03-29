@@ -1,4 +1,4 @@
-name: Check JYSK Prices
+name: Check Prices
 
 on:
   schedule:

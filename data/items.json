@@ -2,16 +2,19 @@
   {
     "id": "armario-fandrup",
     "name": "Armario FANDRUP",
-    "url": "https://jysk.es/almacenaje/armarios/armario-fandrup-145x176-3-puertas-3-cajones-color-roble-cl"
+    "url": "https://jysk.es/almacenaje/armarios/armario-fandrup-145x176-3-puertas-3-cajones-color-roble-cl",
+    "shop": "jysk"
   },
   {
     "id": "altillo",
     "name": "Altillo FANDRUP",
-    "url": "https://jysk.es/almacenaje/accesorios-para-armarios/altillo-fandrup-145x41-3-puertas-color-roble-claro#productAccessories"
+    "url": "https://jysk.es/almacenaje/accesorios-para-armarios/altillo-fandrup-145x41-3-puertas-color-roble-claro#productAccessories",
+    "shop": "jysk"
   },
   {
     "id": "mecedora",
     "name": "Mecedora JUNGLEDAL",
-    "url": "https://jysk.es/jardin/muebles-de-exterior/sillones-de-exterior/mecedora-jungledal-beis"
+    "url": "https://jysk.es/jardin/muebles-de-exterior/sillones-de-exterior/mecedora-jungledal-beis",
+    "shop": "jysk"
   }
 ]
