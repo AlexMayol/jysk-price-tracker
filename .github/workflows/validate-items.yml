@@ -1,0 +1,27 @@
+name: Validate items.json
+
+on:
+  pull_request:
+    paths:
+      - 'data/items.json'
+
+jobs:
+  validate:
+    name: Validate items.json
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - run: npm ci
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Validate items.json
+        run: npm run validate

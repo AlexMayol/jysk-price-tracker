@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc",
-    "start": "tsx src/main.ts"
+    "start": "tsx src/main.ts",
+    "validate": "tsx src/validate-items.ts"
   },
   "author": "AlexMayol",
   "license": "ISC",
