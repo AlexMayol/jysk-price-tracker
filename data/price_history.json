@@ -51,6 +51,14 @@
       "discount_pct": 0,
       "date": "2026-06-19",
       "shop": "jysk"
+    },
+    {
+      "current_price": 25,
+      "original_price": null,
+      "on_sale": false,
+      "discount_pct": 0,
+      "date": "2026-07-16",
+      "shop": "jysk"
     }
   ],
   "item-de002c41-a4d4-409a-9219-0855c42512b9": [
@@ -68,6 +76,14 @@
       "on_sale": true,
       "discount_pct": 32,
       "date": "2026-06-11",
+      "shop": "jysk"
+    },
+    {
+      "current_price": 199,
+      "original_price": null,
+      "on_sale": false,
+      "discount_pct": 0,
+      "date": "2026-07-16",
       "shop": "jysk"
     }
   ]
